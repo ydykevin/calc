@@ -10,33 +10,35 @@ class Calc {
             let isMatchNum: Bool = isNum.evaluate(with: args[i])
             let isMatchSym: Bool = isSym.evaluate(with: args[i])
             if((!isMatchNum) && (!isMatchSym)) {
-                print("neither")
                 exit(1)
             } else if (isMatchSym) {
-                if( i==0 || i == args.count - 1) {
-                    print("is sym out range")
+                if( i == 0 || i == args.count - 1) {
                     exit(1)
                 }
-                let prev = Int(args[i-1])
-                let next = Int(args[i+1])
-                if(prev==nil||next==nil){
-                    print("is sym next not num")
+                let prev = Int(args[i - 1])
+                let next = Int(args[i + 1])
+                if(prev == nil || next == nil) {
+                    exit(1)
+                }
+                if((args[i] == "/" || args[i] == "%") && next == 0) {
                     exit(1)
                 }
             } else if (isMatchNum) {
-                if(i==0&&args.count>1){
-                    let next = isSym.evaluate(with: args[i+1])
-                    if(!next){
+                guard let _ = Int (args[i]) else {
+                    exit(1)
+                }
+                if(i == 0 && args.count > 1) {
+                    let next = isSym.evaluate(with: args[i + 1])
+                    if(!next) {
                         exit(1)
                     }
-                }else if(i>0&&i+1<args.count){
-                    let prev = isSym.evaluate(with: args[i-1])
-                    let next = isSym.evaluate(with: args[i+1])
-                    if((!prev)&&(!next)){
+                } else if(i > 0 && i + 1 < args.count) {
+                    let prev = isSym.evaluate(with: args[i - 1])
+                    let next = isSym.evaluate(with: args[i + 1])
+                    if((!prev) && (!next)) {
                         exit(1)
                     }
                 }
-                
             }
         }
 
@@ -81,4 +83,3 @@ class Calc {
     }
 
 }
-

@@ -11,7 +11,7 @@ class Calc {
             let isMatchSym: Bool = isSym.evaluate(with: args[i])
             
             if((!isMatchNum) && (!isMatchSym)) {
-                exit(1)
+                throw CalcError.InvalidInputError
             } else if (isMatchSym) {
                 if( i == 0 || i == args.count - 1) {
                     throw CalcError.SymbolPositionError

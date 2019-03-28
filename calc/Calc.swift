@@ -2,7 +2,7 @@ import Foundation
 
 class Calc {
 
-    func calculate(args: inout [String]) {
+    func calculate(args: inout [String]) throws {
 
         for i in 0..<args.count {
             let isNum = NSPredicate(format: "SELF MATCHES %@", "^[+-]?[0-9]+$")
@@ -13,30 +13,36 @@ class Calc {
                 exit(1)
             } else if (isMatchSym) {
                 if( i == 0 || i == args.count - 1) {
-                    exit(1)
+                    throw CalcError.SymbolPositionError
+                    //exit(1)
                 }
                 let prev = Int(args[i - 1])
                 let next = Int(args[i + 1])
                 if(prev == nil || next == nil) {
-                    exit(1)
+                    throw CalcError.SymbolPositionError
+                    //exit(1)
                 }
                 if((args[i] == "/" || args[i] == "%") && next == 0) {
-                    exit(1)
+                    throw CalcError.DivAndModZeroError
+                    //exit(1)
                 }
             } else if (isMatchNum) {
                 guard let _ = Int (args[i]) else {
-                    exit(1)
+                    throw CalcError.NumericOutOfBoundsError
+                    //exit(1)
                 }
                 if(i == 0 && args.count > 1) {
                     let next = isSym.evaluate(with: args[i + 1])
                     if(!next) {
-                        exit(1)
+                        throw CalcError.NumberPositionError
+                        //exit(1)
                     }
                 } else if(i > 0 && i + 1 < args.count) {
                     let prev = isSym.evaluate(with: args[i - 1])
                     let next = isSym.evaluate(with: args[i + 1])
                     if((!prev) && (!next)) {
-                        exit(1)
+                        throw CalcError.NumberPositionError
+                        //exit(1)
                     }
                 }
             }
@@ -49,19 +55,23 @@ class Calc {
 
         for i in 0..<args.count {
             if(args[i] == "x" || args[i] == "/" || args[i] == "%") {
-                reduce(args: &args, i: i)
+                var res = reduce(args: &args, i: i)
+                try calculate(args: &res)
+                break
             }
         }
 
         for i in 0..<args.count {
             if(args[i] == "+" || args[i] == "-") {
-                reduce(args: &args, i: i)
+                var res = reduce(args: &args, i: i)
+                try calculate(args: &res)
+                break
             }
         }
 
     }
 
-    func reduce(args: inout [String], i: Int) {
+    func reduce(args: inout [String], i: Int) -> [String] {
 
         switch args[i] {
         case "+":
@@ -78,7 +88,8 @@ class Calc {
             break
         }
 
-        calculate(args: &args)
+        return args
+        //try calculate(args: &args)
 
     }
 

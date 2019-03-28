@@ -25,7 +25,6 @@ do {
     print("Numeric out-of-bounds error")
     exit(3)
 } catch CalcError.NumberPositionError {
-    print("Invalid number position error: Consecutive symbols, e.g.")
+    print("Invalid number position error: Consecutive numbers, e.g.")
     exit(4)
 }
-

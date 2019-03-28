@@ -9,40 +9,35 @@ class Calc {
             let isSym = NSPredicate(format: "SELF MATCHES %@", "\\+|-|x|/|%")
             let isMatchNum: Bool = isNum.evaluate(with: args[i])
             let isMatchSym: Bool = isSym.evaluate(with: args[i])
+            
             if((!isMatchNum) && (!isMatchSym)) {
                 exit(1)
             } else if (isMatchSym) {
                 if( i == 0 || i == args.count - 1) {
                     throw CalcError.SymbolPositionError
-                    //exit(1)
                 }
                 let prev = Int(args[i - 1])
                 let next = Int(args[i + 1])
                 if(prev == nil || next == nil) {
                     throw CalcError.SymbolPositionError
-                    //exit(1)
                 }
                 if((args[i] == "/" || args[i] == "%") && next == 0) {
                     throw CalcError.DivAndModZeroError
-                    //exit(1)
                 }
             } else if (isMatchNum) {
                 guard let _ = Int (args[i]) else {
                     throw CalcError.NumericOutOfBoundsError
-                    //exit(1)
                 }
                 if(i == 0 && args.count > 1) {
                     let next = isSym.evaluate(with: args[i + 1])
                     if(!next) {
                         throw CalcError.NumberPositionError
-                        //exit(1)
                     }
                 } else if(i > 0 && i + 1 < args.count) {
                     let prev = isSym.evaluate(with: args[i - 1])
                     let next = isSym.evaluate(with: args[i + 1])
                     if((!prev) && (!next)) {
                         throw CalcError.NumberPositionError
-                        //exit(1)
                     }
                 }
             }
@@ -89,7 +84,6 @@ class Calc {
         }
 
         return args
-        //try calculate(args: &args)
 
     }
 
